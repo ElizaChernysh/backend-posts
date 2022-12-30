@@ -11,7 +11,7 @@ import cors from 'cors';
 
 mongoose.set('strictQuery', false);
 
-mongoose.connect(process.env.MONGODB_UL)
+mongoose.connect(process.env.MONGODB_URL)
   .then(() => console.log('DB Ok'))
   .catch(() => console.log('DB error', err));
 
