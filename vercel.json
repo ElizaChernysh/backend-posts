@@ -3,8 +3,14 @@
   "name": "backend-for-blog",
   "builds": [
     {
-      "src": "package.json",
-      "use": "vercel-sapper"
+     "src": "index.js", 
+     "use": "@vercel/node" 
+     }
+    ],
+  "routes": [
+    { 
+    "src": "/(.*)", 
+    "dest": "/index.js" 
     }
   ]
 }
