@@ -11,7 +11,7 @@ import cors from 'cors';
 
 mongoose.set('strictQuery', false);
 
-mongoose.connect(process.env.MONGODB_URL)
+mongoose.connect('mongodb+srv://admin:qwerty12345@cluster0.sqzzvql.mongodb.net/blog?retryWrites=true&w=majority')
   .then(() => console.log('DB Ok'))
   .catch(() => console.log('DB error', err));
 
@@ -51,7 +51,7 @@ app.delete('/posts/:id', checkAuth, PostController.remove);
 app.patch('/posts/:id', checkAuth, postCreateValidation, PostController.update);
 
 
-app.listen(process.env.PORT || 4444, (err) => {
+app.listen(4444, (err) => {
   if (err) {
     return console.log(err);
   }
