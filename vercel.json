@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "backend-for-blog",
+  "name": "backend-blog",
   "builds": [
     {
      "src": "index.js", 
