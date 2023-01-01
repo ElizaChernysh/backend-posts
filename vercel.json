@@ -3,7 +3,7 @@
   "name": "backend-blog",
   "builds": [
     {
-     "src": "package.json", 
+     "src": "index.js", 
      "use": "@vercel/node" 
      }
     ],
