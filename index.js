@@ -12,7 +12,7 @@ import cors from 'cors';
 
 mongoose.set('strictQuery', false);
 
-mongoose.connect('mongodb+srv://vercel-admin-user:2DPdd7bdJYc38onE@cluster0.sqzzvql.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('DB Ok'))
   .catch(() => console.log('DB error', err));
 
@@ -52,7 +52,7 @@ app.delete('/posts/:id', checkAuth, remove);
 app.patch('/posts/:id', checkAuth, postCreateValidation, update);
 
 
-app.listen(4444, (err) => {
+app.listen(process.env.PORT || 4444, (err) => {
   if (err) {
     return console.log(err);
   }
