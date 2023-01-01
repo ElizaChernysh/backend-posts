@@ -12,7 +12,7 @@ import cors from 'cors';
 
 mongoose.set('strictQuery', false);
 
-mongoose.connect('mongodb+srv://admin:qwerty12345@cluster0.sqzzvql.mongodb.net/blog?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://vercel-admin-user:2DPdd7bdJYc38onE@cluster0.sqzzvql.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
   .then(() => console.log('DB Ok'))
   .catch(() => console.log('DB error', err));
 
