@@ -33,6 +33,10 @@ app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static('uploads'));
 
+app.get("/", (req, res) => {
+  res.send("Express on Vercel");
+});
+
 app.post('/auth/register', registerValidation, handleValidationErrors,register);
 app.post('/auth/login',loginValidation, handleValidationErrors, login);
 app.get('/auth/me', checkAuth, getMe);
@@ -60,3 +64,4 @@ app.listen(process.env.PORT || 4444, (err) => {
   console.log('Server Ok')
 });
 
+// module.exports = app;
