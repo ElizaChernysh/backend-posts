@@ -1,11 +1,9 @@
 {
   "version": 2,
-  "name": "backend-blog",
-  
   "builds": [
     {
      "src": "index.js", 
-     "use": "@vercel/node" 
+     "use": "@now/node" 
      }
     ],
   "routes": [
