@@ -3,18 +3,18 @@ import mongoose from 'mongoose';
 import multer from 'multer';
 import { registerValidation, loginValidation } from './validations/auth.js';
 import {checkAuth, handleValidationErrors} from './utils/index.js';
-
 import { getAll, getLastTags, getOne, create, remove, update} from './controllers/PostController.js';
 import { login, register, getMe} from './controllers/UserController.js';
 import { postCreateValidation } from './validations/post.js';
 import cors from 'cors';
-
+import dotenv from 'dotenv';
+dotenv.config();
 
 mongoose.set('strictQuery', false);
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('DB Ok'))
-  .catch(() => console.log('DB error', err));
+  .catch((err) => console.log('DB error', err));
 
 const app = express();
 
