@@ -57,7 +57,7 @@ app.get('/posts/tags', getLastTags);
 app.get('/posts/:id', getOne);
 app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, create);
 app.delete('/posts/:id', checkAuth, remove);
-app.patch('/posts/:id', checkAuth, postCreateValidation, update);
+app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, update);
 
 
 app.listen(process.env.PORT || 4444, (err) => {
