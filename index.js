@@ -60,7 +60,7 @@ app.delete('/posts/:id', checkAuth, remove);
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, update);
 
 
-app.listen(process.env.PORT || 4444, (err) => {
+app.listen(process.env.PORT || '4444', (err) => {
   if (err) {
     return console.log(err);
   }
