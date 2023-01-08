@@ -35,7 +35,7 @@ const upload = multer({ storage });
 
 app.use(express.json());
 app.use(cors());
-app.use('/uploads', express.static('/uploads'));
+app.use('/uploads', express.static('uploads'));
 
 app.get("/", (req, res) => {
   res.send("Express on Vercel");
@@ -49,6 +49,7 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   res.json({
     url: `/uploads/${req.file.originalname}`,
   });
+  res.send(`/uploads/${req.file.originalname}`)
 });
 
 app.get('/tags', getLastTags);
