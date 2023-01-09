@@ -21,7 +21,7 @@ const app = express();
 
 // const storage = multer.memoryStorage();
 
-const storageConfig = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     if (!fs.existsSync('uploads')) {
       fs.mkdirSync('uploads');
@@ -33,14 +33,14 @@ const storageConfig = multer.diskStorage({
   }
 });
 
-// const upload = multer({ storage });
+const upload = multer({ storage });
 
 app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static('uploads'));
 // app.use(express.static(__dirame));
 
-app.use(multer({storage:storageConfig}).single("image"));
+// app.use(multer({storage:storageConfig}).single("image"));
 
 app.get("/", (req, res) => {
   res.send("Express on Vercel");
@@ -50,24 +50,24 @@ app.post('/auth/register', registerValidation, handleValidationErrors,register);
 app.post('/auth/login',loginValidation, handleValidationErrors, login);
 app.get('/auth/me', checkAuth, getMe);
 
-app.post('/upload', checkAuth, (req, res, next) => {
- let image = req.file;
+// app.post('/upload', checkAuth, (req, res, next) => {
+//  let image = req.file;
 
-    if(!image)
-        res.send("Ошибка при загрузке файла");
-    else
-        res.send("Файл загружен");
-});
-
-// app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-//   // res.json({
-//   //   url: `/upload/${req.file.originalname}`,
-//   //   URl: `upload/${req.file.filename}`
-//   // });
-//   res.json({
-//     url: `/uploads/${req.file.originalname}`,
-//   });
+//     if(!image)
+//         res.send("Ошибка при загрузке файла");
+//     else
+//         res.send("Файл загружен");
 // });
+
+app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+  // res.json({
+  //   url: `/upload/${req.file.originalname}`,
+  //   URl: `upload/${req.file.filename}`
+  // });
+  res.json({
+    url: `/uploads/${req.file.originalname}`,
+  });
+});
 
 app.get('/tags', getLastTags);
 app.get('/posts', getAll);
