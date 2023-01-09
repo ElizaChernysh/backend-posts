@@ -19,29 +19,29 @@ mongoose.connect(process.env.MONGODB_URI)
 
 const app = express();
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     if (!fs.existsSync('uploads')) {
-//       fs.mkdirSync('uploads');
-//     }
-//     cb(null, 'uploads');
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, file.originalname);
-//   }
-// });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (!fs.existsSync('uploads')) {
+      fs.mkdirSync('uploads');
+    }
+    cb(null, 'uploads');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+});
 
-// const upload = multer({ storage });
+const upload = multer({ storage });
 
 const oneMegabyteInBytes = 1000000;
 const outputFolderName = 'uploads';
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: 'uploads',
-    filename: (req, file, cb) => cb(null, file.originalname),
-  }),
-});
+// const upload = multer({
+//   storage: multer.diskStorage({
+//     destination: 'uploads',
+//     filename: (req, file, cb) => cb(null, file.originalname),
+//   }),
+// });
 
 app.use(express.json());
 app.use(cors());
