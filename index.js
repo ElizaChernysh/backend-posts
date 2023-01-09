@@ -56,6 +56,7 @@ app.post('/auth/login',loginValidation, handleValidationErrors, login);
 app.get('/auth/me', checkAuth, getMe);
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+
   res.json({
     url: `/uploads/${req.file.originalname}`,
   });
