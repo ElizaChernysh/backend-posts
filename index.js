@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
     if (!fs.existsSync('uploads')) {
       fs.mkdirSync('uploads');
     }
-    cb(null, 'uploads');
+    cb(null, './uploads');
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
@@ -46,14 +46,25 @@ app.post('/auth/register', registerValidation, handleValidationErrors,register);
 app.post('/auth/login',loginValidation, handleValidationErrors, login);
 app.get('/auth/me', checkAuth, getMe);
 
-app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-  const file = req.file;
+// app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+//   const file = req.file;
+//   if (!file) {
+//     const error = new Error('Please upload a file')
+//     return error;
+//   }
+//     res.send(file);
+ 
+// });
+
+app.post('/upload', checkAuth, upload.single('image'), (req, res, next) => {
+  console.log(JSON.stringify(req.file));
+
+  const file = req.file.path;
   if (!file) {
     const error = new Error('Please upload a file')
     return error;
   }
     res.send(file);
- 
 });
 
 app.get('/tags', getLastTags);
