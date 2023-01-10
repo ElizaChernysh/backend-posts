@@ -33,17 +33,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-const oneMegabyteInBytes = 1000000;
-const outputFolderName = 'uploads';
-
-// const upload = multer({
-//   storage: multer.diskStorage({
-//     destination: 'uploads',
-//     filename: (req, file, cb) => cb(null, file.originalname),
-//   }),
-// });
-
 app.use(express.json());
+
 app.use(cors());
 app.use('/uploads', express.static('uploads'));
 
@@ -56,10 +47,13 @@ app.post('/auth/login',loginValidation, handleValidationErrors, login);
 app.get('/auth/me', checkAuth, getMe);
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-
-  res.json({
-    url: `/uploads/${req.file.originalname}`,
-  });
+  const file = req.file;
+  if (!file) {
+    const error = new Error('Please upload a file')
+    return error;
+  }
+    res.send(file);
+ 
 });
 
 app.get('/tags', getLastTags);
