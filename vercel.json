@@ -5,20 +5,18 @@
     {
       "src": "index.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "uploads/**",
+    }, {
+      "src": "uploads",
       "use": "@vercel/static"
-  }
+    }
   ],
   "routes": [
     {
       "src": "/(.*)",
       "dest": "/"
-    },
-    {
+    }, {
       "src": "/(.*)",
       "dest": "/"
-  }
+    }
   ]
 }
