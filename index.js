@@ -57,18 +57,6 @@ app.get("/", (req, res) => {
   res.send("Express on Vercel");
 });
 
-// app.get('/', (req, res) => {
-//   ImgModel.find({}, (err, items) => {
-//     if (err) {
-//       console.log(err);
-//       res.status(500).send('An error occurred', err);
-//     }
-//     else {
-//       res.render('imagesPage', { items: items });
-//     }
-//   });
-// });
-
 app.post('/auth/login', loginValidation, handleValidationErrors, login);
 app.post('/auth/register', registerValidation, handleValidationErrors, register);
 app.get('/auth/me', checkAuth, getMe);
@@ -113,14 +101,20 @@ app.post("/upload", checkAuth, upload.single('myImage'),(req,res)=>{
       contentType: req.file.mimetype,
       image: new Buffer(encode_img, 'base64')
   };
-  ImgModel.create(final_img, function(err,result){
+  ImgModel.create(final_img, function(err, result){
       if(err){
           console.log(err);
-      }else{
+      } else{
           console.log(result.img.Buffer);
           console.log("Saved To database");
+          console.log(img);
           res.contentType(final_img.contentType);
-          res.send(final_img.image);
+          // res.save(final_img.image);
+          // res.send(final_img.image);
+          res.json({
+            myImage: final_img.image,
+          })
+
       }
   })
 });
