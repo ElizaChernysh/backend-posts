@@ -4,6 +4,7 @@ import fs from "fs";
 import multer from 'multer';
 import path from 'path';
 import bodyParser from 'body-parser';
+import { GridFsStorage } from "multer-gridfs-storage";
 import { registerValidation, loginValidation } from './validations/auth.js';
 import { checkAuth, handleValidationErrors } from './utils/index.js';
 import { getAll, getLastTags, getOne, create, remove, update } from './controllers/PostController.js';
@@ -23,33 +24,39 @@ mongoose
 
 const app = express();
 
-app.use(bodyParser.urlencoded(
-  { extended:true }
-))
+const storage = new GridFsStorage({
+  url: process.env.MONGODB_URI,
+  options: { useNewUrlParser: true, useUnifiedTopology: true },
+  myImage: (req, file) => {
+      const match = ["image/png", "image/jpeg"];
 
-app.set("view engine","ejs");
+      if (match.indexOf(file.mimetype) === -1) {
+          const filename = `${Date.now()}-any-name-${file.originalname}`;
+          return filename;
+      }
 
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => {
-    if (!fs.existsSync('uploads')) {
-      fs.mkdirSync('uploads');
-    }
-    cb(null, 'uploads');
-  },
-  filename: (_, file, cb) => {
-    cb(null, file.fieldname + '-' + Date.now());
+      return {
+          bucketName: "photos",
+          filename: `${Date.now()}-any-name-${file.originalname}`,
+      };
   },
 });
 
 const upload = multer({ storage: storage });
-const __dirname = path.resolve();
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+// app.use(bodyParser.urlencoded(
+//   { extended:true }
+// ))
+
+// app.set("view engine","ejs");
+
+
+// app.use(bodyParser.urlencoded({ extended: false }))
+// app.use(bodyParser.json())
 
 app.use(express.json());
 app.use(cors());
-app.use('/uploads', express.static('uploads'));
+
 
 // const imgModel = ('./model');
 
@@ -61,15 +68,20 @@ app.post('/auth/login', loginValidation, handleValidationErrors, login);
 app.post('/auth/register', registerValidation, handleValidationErrors, register);
 app.get('/auth/me', checkAuth, getMe);
 
-// app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-//   res.json({
-//     url: `/uploads/${req.file.originalname}`,
-//   });
+app.post("/upload", upload.single("myImage"), async (req, res) => {
+  if (req.file === undefined) return res.send("you must select a file.");
+  const port = process.env.PORT || 'https://localhost:4444';
+  const imgUrl = `${port}/${req.file.filename}`;
+  return res.send(imgUrl);
+});
 
-//   res.send({
-//     url: `/uploads/${req.file.originalname}`,
-//   })
+// const conn = mongoose.connection;
+// conn.once("open", function () {
+//     gfs = Grid(conn.db, mongoose.mongo);
+//     gfs.collection("photos");
 // });
+
+// app.use("/", upload);
 
 // app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 //   if (req.file == null) {
@@ -94,30 +106,30 @@ app.get('/auth/me', checkAuth, getMe);
 // }
 // });
 
-app.post("/upload", checkAuth, upload.single('myImage'),(req,res)=>{
-  const img = fs.readFileSync(req.file.path);
-  const encode_img = img.toString('base64');
-  const final_img = {
-      contentType: req.file.mimetype,
-      image: new Buffer(encode_img, 'base64')
-  };
-  ImgModel.create(final_img, function(err, result){
-      if(err){
-          console.log(err);
-      } else{
-          console.log(result.img.Buffer);
-          console.log("Saved To database");
-          console.log(img);
-          res.contentType(final_img.contentType);
-          // res.save(final_img.image);
-          // res.send(final_img.image);
-          res.json({
-            myImage: final_img.image,
-          })
+// app.post("/upload", checkAuth, upload.single('myImage'),(req,res)=>{
+//   const img = fs.readFileSync(req.file.path);
+//   const encode_img = img.toString('base64');
+//   const final_img = {
+//       contentType: req.file.mimetype,
+//       image: new Buffer(encode_img, 'base64')
+//   };
+//   ImgModel.create(final_img, function(err, result){
+//       if(err){
+//           console.log(err);
+//       } else{
+//           console.log(result.img.Buffer);
+//           console.log("Saved To database");
+//           console.log(img);
+//           res.contentType(final_img.contentType);
+//           // res.save(final_img.image);
+//           res.send(final_img.image);
+//           // res.json({
+//           //   myImage: final_img.image,
+//           // })
 
-      }
-  })
-});
+//       }
+//   })
+// });
 
 app.get('/tags', getLastTags);
 
