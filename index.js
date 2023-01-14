@@ -28,17 +28,17 @@ const storage = new GridFsStorage({
   url: process.env.MONGODB_URI,
   options: { useNewUrlParser: true, useUnifiedTopology: true },
   myImage: (req, file) => {
-      const match = ["image/png", "image/jpeg"];
+    const match = ["image/png", "image/jpeg"];
 
-      if (match.indexOf(file.mimetype) === -1) {
-          const filename = `${Date.now()}-any-name-${file.originalname}`;
-          return filename;
-      }
+    if (match.indexOf(file.mimetype) === -1) {
+      const filename = `${Date.now()}-any-name-${file.originalname}`;
+      return filename;
+    }
 
-      return {
-          bucketName: "photos",
-          filename: `${Date.now()}-any-name-${file.originalname}`,
-      };
+    return {
+      bucketName: "photos",
+      filename: `${Date.now()}-any-name-${file.originalname}`,
+    };
   },
 });
 
@@ -69,10 +69,15 @@ app.post('/auth/register', registerValidation, handleValidationErrors, register)
 app.get('/auth/me', checkAuth, getMe);
 
 app.post("/upload", upload.single("myImage"), async (req, res) => {
-  if (req.file === undefined) return res.send("you must select a file.");
-  const port = process.env.PORT || 'https://localhost:4444';
-  const imgUrl = `${port}/${req.file.filename}`;
-  return res.send(imgUrl);
+  if (req.body === undefined) {
+    return res.send("you must select a file.");
+  } else {
+    console.log(req.body);
+    console.log(req.myImage);
+    const port = process.env.PORT || 'https://localhost:4444';
+    const imgUrl = `${port}/${req.file.filename}`;
+    return res.send(imgUrl);
+  }
 });
 
 // const conn = mongoose.connection;
@@ -101,7 +106,7 @@ app.post("/upload", upload.single("myImage"), async (req, res) => {
 //     };
 
 //     newItem.save();
-    
+
 //     res.json({newItem});
 // }
 // });
