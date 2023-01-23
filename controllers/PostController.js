@@ -52,19 +52,70 @@ export const getOne = async (req, res) => {
   }
 };
 
+// export const create = async (req, res) => {
+//   try {
+//     const doc = new PostModel({
+//       title: req.body.title,
+//       text: req.body.text,
+//       imageUrl: req.body.imageUrl,
+//       tags: req.body.tags.split(', '),
+//       user: req.userId,
+//     });
+
+//     const post = await doc.save();
+
+//     res.json(post);
+
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({
+//       message: 'Не вдалося створити статтю'
+//     })
+//   }
+// };
+
 export const create = async (req, res) => {
   try {
-    const doc = new PostModel({
-      title: req.body.title,
-      text: req.body.text,
-      imageUrl: req.body.imageUrl,
-      tags: req.body.tags.split(', '),
+
+    const { title, text, tags } = req.body;
+    const user = await User.findById(req.userId);
+
+    if (req.files) {
+      let fileName = Date.now().toString() + req.files.image.name;
+      const __dirname = dirname(fileURLToPath(import.meta.url));
+      req.files.image.mv(path.join(__dirname, '..', 'uploads', fileName));
+
+    const newPostWithImage = new PostModel({
+      title,
+      text,
+      imageUrl: fileName,
+      tags: tags.split(', '),
       user: req.userId,
     });
 
-    const post = await doc.save();
+    await newPostWithImage.save();
+    await User.findByIdAndUpdate(req.userId, {
+      $push: { posts: newPostWithImage }
+    });
 
-    res.json(post);
+    return res.json(newPostWithImage);
+  }
+
+  const newPostWithoutImage = new Post({
+    username: user.username,
+    title,
+    text,
+    imgUrl: '',
+    author: req.userId
+  });
+  await newPostWithoutImage.save();
+  await User.findByIdAndUpdate(req.userId, {
+    $push: { posts: newPostWithoutImage}
+  });
+
+  return res.json(newPostWithoutImage);
+
+
 
   } catch (err) {
     console.log(err);
